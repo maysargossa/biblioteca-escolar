@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Biblioteca Escolar</title>
+
+  <?!= incluirArquivo('style'); ?>
+</head>
+
+<body>
+
+  <div id="telaLogin" class="login-container">
+
+    <div class="login-card">
+
+      <div class="logo">📚</div>
+
+      <h1>Biblioteca Escolar</h1>
+
+      <p class="subtitulo">
+        Acesse o sistema da biblioteca
+      </p>
+
+      <input
+        type="text"
+        id="usuario"
+        placeholder="Usuário"
+      >
+
+      <input
+        type="password"
+        id="senha"
+        placeholder="Senha"
+      >
+
+      <button onclick="entrar()">
+        Entrar
+      </button>
+
+      <p id="mensagemLogin" class="mensagem"></p>
+
+    </div>
+
+  </div>
+
+
+  <div id="aplicativo" class="app escondido">
+
+    <aside class="menu">
+
+      <div class="menu-logo">
+        📚
+        <span>Biblioteca</span>
+      </div>
+
+      <button
+        class="menu-item ativo"
+        onclick="mostrarPagina('inicio', this)"
+      >
+        🏠 Início
+      </button>
+
+      <button
+        class="menu-item"
+        onclick="mostrarPagina('livros', this)"
+      >
+        📚 Livros
+      </button>
+
+      <button
+        class="menu-item"
+        onclick="mostrarPagina('alunos', this)"
+      >
+        👩‍🎓 Alunos
+      </button>
+
+      <button
+        class="menu-item"
+        onclick="mostrarPagina('emprestimos', this)"
+      >
+        📖 Empréstimos
+      </button>
+
+      <button
+        class="menu-item sair"
+        onclick="sair()"
+      >
+        🚪 Sair
+      </button>
+
+    </aside>
+
+
+    <main class="conteudo">
+
+      <header class="topo">
+
+        <div>
+          <h2 id="tituloPagina">
+            Início
+          </h2>
+
+          <p>
+            Sistema de gerenciamento da biblioteca
+          </p>
+        </div>
+
+      </header>
+
+
+      <section id="paginaInicio" class="pagina">
+
+        <div class="cards">
+
+          <div class="card">
+            <div class="card-icone">📚</div>
+
+            <div>
+              <span>Total de livros</span>
+              <strong id="totalLivros">0</strong>
+            </div>
+          </div>
+
+
+          <div class="card">
+            <div class="card-icone">✅</div>
+
+            <div>
+              <span>Disponíveis</span>
+              <strong id="livrosDisponiveis">0</strong>
+            </div>
+          </div>
+
+
+          <div class="card">
+            <div class="card-icone">👩‍🎓</div>
+
+            <div>
+              <span>Alunos</span>
+              <strong id="totalAlunos">0</strong>
+            </div>
+          </div>
+
+
+          <div class="card">
+            <div class="card-icone">📖</div>
+
+            <div>
+              <span>Empréstimos ativos</span>
+              <strong id="emprestimosAtivos">0</strong>
+            </div>
+          </div>
+
+
+          <div class="card alerta">
+            <div class="card-icone">⚠️</div>
+
+            <div>
+              <span>Atrasados</span>
+              <strong id="atrasados">0</strong>
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="boas-vindas">
+
+          <h2>Bem-vindo à Biblioteca 📚</h2>
+
+          <p>
+            Aqui você pode cadastrar livros e alunos,
+            realizar empréstimos, registrar devoluções
+            e acompanhar os livros disponíveis.
+          </p>
+
+          <div class="regras">
+
+            <div>
+              <strong>7 dias</strong>
+              <span>prazo para devolução</span>
+            </div>
+
+            <div>
+              <strong>R$ 2,00</strong>
+              <span>multa por dia de atraso</span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section id="paginaLivros" class="pagina escondido">
+
+        <div class="pagina-cabecalho">
+
+          <div>
+            <h2>Livros</h2>
+            <p>Cadastre e consulte os livros da biblioteca.</p>
+          </div>
+
+          <button onclick="abrirModal('modalLivro')">
+            + Novo livro
+          </button>
+
+        </div>
+
+
+        <div class="pesquisa">
+
+          <input
+            type="text"
+            id="pesquisaLivros"
+            placeholder="Pesquisar por título, autor ou gênero..."
+            oninput="filtrarLivros()"
+          >
+
+        </div>
+
+
+        <div class="tabela-container">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Gênero</th>
+                <th>Quantidade</th>
+                <th>Disponíveis</th>
+              </tr>
+            </thead>
+
+            <tbody id="tabelaLivros"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <section id="paginaAlunos" class="pagina escondido">
+
+        <div class="pagina-cabecalho">
+
+          <div>
+            <h2>Alunos</h2>
+            <p>Cadastre os alunos que utilizam a biblioteca.</p>
+          </div>
+
+          <button onclick="abrirModal('modalAluno')">
+            + Novo aluno
+          </button>
+
+        </div>
+
+
+        <div class="pesquisa">
+
+          <input
+            type="text"
+            id="pesquisaAlunos"
+            placeholder="Pesquisar aluno ou turma..."
+            oninput="filtrarAlunos()"
+          >
+
+        </div>
+
+
+        <div class="tabela-container">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Turma</th>
+                <th>E-mail</th>
+              </tr>
+            </thead>
+
+            <tbody id="tabelaAlunos"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <section id="paginaEmprestimos" class="pagina escondido">
+
+        <div class="pagina-cabecalho">
+
+          <div>
+            <h2>Empréstimos</h2>
+            <p>Controle os empréstimos e devoluções.</p>
+          </div>
+
+          <button onclick="abrirModal('modalEmprestimo')">
+            + Novo empréstimo
+          </button>
+
+        </div>
+
+
+        <div class="pesquisa">
+
+          <input
+            type="text"
+            id="pesquisaEmprestimos"
+            placeholder="Pesquisar por livro, aluno ou status..."
+            oninput="filtrarEmprestimos()"
+          >
+
+        </div>
+
+
+        <div class="tabela-container">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Livro</th>
+                <th>Aluno</th>
+                <th>Empréstimo</th>
+                <th>Devolução</th>
+                <th>Status</th>
+                <th>Multa</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+
+            <tbody id="tabelaEmprestimos"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+  <div id="modalLivro" class="modal escondido">
+
+    <div class="modal-card">
+
+      <button
+        class="fechar"
+        onclick="fecharModal('modalLivro')"
+      >
+        ×
+      </button>
+
+      <h2>Cadastrar livro</h2>
+
+      <input
+        type="text"
+        id="livroTitulo"
+        placeholder="Título"
+      >
+
+      <input
+        type="text"
+        id="livroAutor"
+        placeholder="Autor"
+      >
+
+      <input
+        type="text"
+        id="livroGenero"
+        placeholder="Gênero"
+      >
+
+      <input
+        type="number"
+        id="livroQuantidade"
+        placeholder="Quantidade"
+        min="1"
+      >
+
+      <button onclick="cadastrarLivro()">
+        Cadastrar livro
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div id="modalAluno" class="modal escondido">
+
+    <div class="modal-card">
+
+      <button
+        class="fechar"
+        onclick="fecharModal('modalAluno')"
+      >
+        ×
+      </button>
+
+      <h2>Cadastrar aluno</h2>
+
+      <input
+        type="text"
+        id="alunoNome"
+        placeholder="Nome completo"
+      >
+
+      <input
+        type="text"
+        id="alunoTurma"
+        placeholder="Turma"
+      >
+
+      <input
+        type="email"
+        id="alunoEmail"
+        placeholder="E-mail"
+      >
+
+      <button onclick="cadastrarAluno()">
+        Cadastrar aluno
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div id="modalEmprestimo" class="modal escondido">
+
+    <div class="modal-card">
+
+      <button
+        class="fechar"
+        onclick="fecharModal('modalEmprestimo')"
+      >
+        ×
+      </button>
+
+      <h2>Novo empréstimo</h2>
+
+      <label>Livro</label>
+
+      <select id="emprestimoLivro"></select>
+
+      <label>Aluno</label>
+
+      <select id="emprestimoAluno"></select>
+
+      <button onclick="realizarEmprestimo()">
+        Confirmar empréstimo
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div id="notificacao" class="notificacao"></div>
+
+
+  <?!= incluirArquivo('script'); ?>
+
+</body>
+
+</html>
